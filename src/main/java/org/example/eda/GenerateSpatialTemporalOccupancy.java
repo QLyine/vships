@@ -1,6 +1,7 @@
 package org.example.eda;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
@@ -106,7 +108,8 @@ public class GenerateSpatialTemporalOccupancy {
   }
 
   private static NavigableSet<SpatialTemporalOccupancyRecord> createTreeRecords() {
-    return new TreeSet<>((o1, o2) -> Comparator.comparing(SpatialTemporalOccupancyRecord::getVesselId)
+    return new ConcurrentSkipListSet<>((o1, o2) -> Comparator.comparing(
+        SpatialTemporalOccupancyRecord::getVesselId)
         .thenComparing(SpatialTemporalOccupancyRecord::getEntry)
         .thenComparing(SpatialTemporalOccupancyRecord::getExit)
         .thenComparing(SpatialTemporalOccupancyRecord::getPolygonName)
