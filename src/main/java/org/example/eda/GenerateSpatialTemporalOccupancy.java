@@ -1,7 +1,6 @@
 package org.example.eda;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -86,25 +85,28 @@ public class GenerateSpatialTemporalOccupancy {
       for (final Entry<String, SliceTimeCounter> stringSliceTimeCounterEntry : collect) {
         final String sliceName = stringSliceTimeCounterEntry.getKey();
         final SliceTimeCounter sliceTimeCounter = stringSliceTimeCounterEntry.getValue();
-        spatialTemporalOccupancyRecords.add(new SpatialTemporalOccupancyRecord(vesselId,
+        spatialTemporalOccupancyRecords.add(createSpatialTemporalRecord(vesselId,
             sliceName,
-            sliceTimeCounter.minTs,
-            sliceTimeCounter.maxTs,
-            sliceTimeCounter.counter
+            sliceTimeCounter
         ));
         sliceTimeCounterMap.remove(sliceName);
       }
     }
 
-    sliceTimeCounterMap.forEach((sliceName, sliceTimeCounter) -> {
-      spatialTemporalOccupancyRecords.add(new SpatialTemporalOccupancyRecord(vesselId,
-          sliceName,
-          sliceTimeCounter.minTs,
-          sliceTimeCounter.maxTs,
-          sliceTimeCounter.counter
-      ));
-    });
+    sliceTimeCounterMap.forEach((sliceName, sliceTimeCounter) -> spatialTemporalOccupancyRecords.add(
+        createSpatialTemporalRecord(vesselId, sliceName, sliceTimeCounter)));
     return noiseCancel.cancelNoise(spatialTemporalOccupancyRecords).stream();
+  }
+
+  private SpatialTemporalOccupancyRecord createSpatialTemporalRecord(
+      final String vesselId, final String sliceName, final SliceTimeCounter sliceTimeCounter
+  ) {
+    return new SpatialTemporalOccupancyRecord(vesselId,
+        sliceName,
+        sliceTimeCounter.minTs,
+        sliceTimeCounter.maxTs,
+        sliceTimeCounter.counter
+    );
   }
 
   private static NavigableSet<SpatialTemporalOccupancyRecord> createTreeRecords() {
